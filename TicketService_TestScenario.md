@@ -91,6 +91,32 @@ TEST CASES:
 | **Scenario ID**   | **Test case ID**   | **Test case Name**                 | **Test case Description**                                                                                                                  | **Test Step \#**   | **Test Description**                                                                                                   | **Expected Result**                                                                                                                                                                    | **Path covered**                  |
 |-------------------|--------------------|------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|--------------------|------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|
 
+TEST CASES FOR UC001: Number of seats available within the venue
+
+TSD001	TCD001	Verify available Choices	Ticket Service provides the customer a choice to view the available seats across all levels or a specific seating level.	Pre
+Condition	a.	Ensure the application under test is available and stable to test
+b.	Test data condition is understood (where there are only 4 applicable levels).		0,1
+				Step 1	Run the application and select to discover seat availability	Application runs successfully and customer selects Discover Seat availability.	
+				Step 2	Customer is prompted if they need the availability of seats in all levels or from a specific level	On Choosing to discover available seats, application waits for customer input to either select ‘All’ or give a valid level id to view.	
+TSD002	TCD002a	Verify Valid Level	Validate that the customer inputs a valid Level ID to view the seating details.	Pre-condition	Customer chooses to select a specific level		0,1
+				Step 1	Customer chooses the level from 1/2/3/4	The available seats are displayed from the specific level customer has requested.
+Total available seats from specific levels = total available seats from specific levels – (total seats on hold + total seats reserved)
+DB Check: number of entries fetched with status = ‘FREE’ for a specific level	0,1,2
+TSD002	TCD002b	Verify Valid Level	Validate that the customer inputs a valid Level ID to view the seating details.	Pre-condition	Customer chooses to select a specific level		
+				Step 1	Customer chooses a level apart from 1-4.	Error Message should be displayed as “Inappropriate Level ID, choose values from 1-4”	0,1,2,3
+TSD003	TCD003	Seat Availability	Validate that the correct number of seats available are retrieved for a given seating level	Step 1	Customer chooses to view the availability from all levels
+Input value: All	Available seats across all levels should be listed which should not include either the reserved or on hold seats.
+Note: the total available seats at any time should not exceed 6500. (Sum of (cross product of rows & seats) from all levels.)
+Total available seats for holding / reserving from all levels = total available seats from all levels – (total seats on hold from all levels + total seats reserved from all levels)
+DB Check: number of entries fetched with status = ‘FREE’ for all levels	0,1,4
+				Step 2	Customer chooses to view the availability in a specific level
+Input values from (1/2/3/4).	Available seats from the selected specific level should be listed which should not include either the reserved or on hold seats
+Note: the total available seats at any time should not exceed the cross product of rows and seats in the opted level.
+Total available seats from specific levels = total available seats from specific levels – (total seats on hold + total seats reserved)
+DB Check: number of entries fetched with status = ‘FREE’ for a specific level	0,1,2,4
+TSD004	TCD004	Multiple Customers	Validate when 2 or more customers are accessing the same details, the seats held by one customer are not available for the other customer.	Pre-Condition	2 Customers are viewing the seats available for a specific level at the same time; where customer1 has held few seats.		
+				Step 1	Customer2 is viewing the details for the same level as customer 1.	The seats held by customer1 should not be displayed for customer2	0,1,2
+
 
 EXIT CRITERIA:
 ==============
